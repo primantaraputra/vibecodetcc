@@ -1,0 +1,21 @@
+{
+  "name": "SI-BANSOS Kecamatan Sukamaju",
+  "short_name": "SI-BANSOS",
+  "description": "Sistem Terpadu Cek Kelayakan & Verifikasi Bansos Berjenjang Kecamatan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16a34a",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "id",
+  "categories": ["government", "utilities", "social"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
