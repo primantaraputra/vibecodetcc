@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import {
   Sliders,
-  Sparkles,
   Bot,
 } from 'lucide-react';
 import NotificationBell from '@/components/layout/NotificationBell';
@@ -61,40 +60,24 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
             </h1>
           </div>
 
-          {/* Sisi Kanan: Hanya Notifikasi dengan Circle Transparan */}
+          {/* Sisi Kanan: Hanya Notifikasi dengan Circle Transparan 100% Rounded */}
           <div className="flex items-center flex-shrink-0">
             <NotificationBell
-              buttonClassName="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur-xs border border-white/25 flex items-center justify-center transition shadow-xs cursor-pointer"
+              buttonClassName="w-10 h-10 rounded-full aspect-square bg-white/15 hover:bg-white/25 text-white backdrop-blur-xs border border-white/25 flex items-center justify-center transition shadow-xs cursor-pointer"
             />
           </div>
         </div>
 
-        {/* 2. TOMBOL ASISTEN AI (Bilah Putih Mengambang di atas Gradasi) */}
-        <div className="mt-5 relative z-10">
+        {/* 2. TOMBOL ASISTEN AI (Kompak, Secukupnya, Ikon Chatbot di Kiri) */}
+        <div className="mt-4 relative z-10 flex items-center">
           <button
             type="button"
             onClick={handleOpenAI}
-            className="w-full p-2.5 sm:p-3 px-4 bg-white hover:bg-slate-50 text-slate-800 rounded-full shadow-lg shadow-teal-950/15 flex items-center justify-between transition-all duration-200 group cursor-pointer border border-white/80 active:scale-[0.99]"
-            aria-label="Tanya Asisten AI Bansos"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-800 rounded-full shadow-xs hover:shadow transition-all duration-150 group cursor-pointer border border-white/80 active:scale-95 text-xs font-bold"
+            aria-label="Buka AI Asisten"
           >
-            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-teal-50 text-teal-700 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-4 h-4 animate-pulse" />
-              </div>
-              <div className="text-left min-w-0">
-                <span className="text-xs sm:text-sm font-bold text-slate-900 block leading-tight truncate">
-                  Tanya Asisten AI Bansos...
-                </span>
-                <span className="text-[10px] text-slate-400 block leading-tight truncate hidden xs:block">
-                  Cek kriteria, status desil, & info bansos seketika
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-teal-600 text-white text-[11px] font-bold shadow-xs group-hover:bg-teal-700 transition flex-shrink-0 ml-2">
-              <Bot className="w-3.5 h-3.5" />
-              <span>Tanya AI</span>
-            </div>
+            <Bot className="w-4 h-4 text-teal-600 group-hover:scale-110 transition-transform flex-shrink-0" />
+            <span>AI Asisten</span>
           </button>
         </div>
       </section>

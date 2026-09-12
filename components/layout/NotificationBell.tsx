@@ -80,8 +80,8 @@ export default function NotificationBell({ className = '', buttonClassName = '' 
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`relative p-2 rounded-xl transition focus:outline-none cursor-pointer ${
-          buttonClassName || 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+        className={`relative transition focus:outline-none cursor-pointer flex items-center justify-center ${
+          buttonClassName || 'p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100'
         }`}
         aria-label="Notifikasi"
       >
