@@ -52,7 +52,7 @@ export function RegisterForm() {
         role: 'masyarakat',
       });
 
-      // 2. Set demo session cookie agar middleware mengizinkan akses ke /status-bansos
+      // 2. Set demo session cookie agar middleware mengizinkan akses ke /beranda
       document.cookie = `demo_session=${encodeURIComponent(
         JSON.stringify(newUser)
       )}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
@@ -76,10 +76,10 @@ export function RegisterForm() {
       }
 
       setSuccessMsg(
-        'Pendaftaran akun warga berhasil! Mengalihkan ke halaman status bansos...'
+        'Pendaftaran akun warga berhasil! Mengalihkan ke beranda warga...'
       );
       setTimeout(() => {
-        router.push('/status-bansos');
+        router.push('/beranda');
         router.refresh();
       }, 1200);
     } catch (err: any) {

@@ -19,7 +19,7 @@ export default async function WargaProfilPage() {
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Quick Link Banner ke Halaman Status Bansos */}
+      {/* Quick Link Banner ke Halaman Beranda Warga */}
       <div className="bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 text-white p-4 sm:p-5 rounded-2xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
@@ -35,10 +35,10 @@ export default async function WargaProfilPage() {
           </div>
         </div>
         <Link
-          href="/status-bansos"
+          href="/beranda"
           className="px-4 py-2.5 bg-white text-teal-800 font-bold text-xs rounded-xl shadow-xs hover:bg-teal-50 transition flex items-center justify-center gap-1.5 flex-shrink-0"
         >
-          <span>Buka Status Bansos Saya</span>
+          <span>Buka Beranda Bansos</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>

@@ -8,7 +8,7 @@ import {
   MessageSquarePlus,
   Search,
   Map,
-  ClipboardCheck,
+  Home,
 } from 'lucide-react';
 import NotificationBell from './NotificationBell';
 import { LogoutButton } from './LogoutButton';
@@ -22,7 +22,7 @@ export function MasyarakatHeader({ profile }: MasyarakatHeaderProps) {
   const pathname = usePathname();
 
   const tabs = [
-    { href: '/status-bansos', label: 'Status Bansos', icon: ClipboardCheck },
+    { href: '/beranda', label: 'Beranda', icon: Home },
     { href: '/profil', label: 'Profil Saya', icon: User },
     { href: '/sanggahan', label: 'Ajukan Sanggahan', icon: MessageSquarePlus },
     { href: '/cek-status', label: 'Cek Status NIK/KK', icon: Search },
@@ -33,7 +33,7 @@ export function MasyarakatHeader({ profile }: MasyarakatHeaderProps) {
     <>
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-2xs">
         <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/status-bansos" className="flex items-center gap-2 hover:opacity-90 transition">
+          <Link href="/beranda" className="flex items-center gap-2 hover:opacity-90 transition">
             <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center text-white shadow-xs">
               <ShieldCheck className="w-4 h-4" />
             </div>

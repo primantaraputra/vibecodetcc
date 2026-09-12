@@ -47,7 +47,7 @@ export async function loginUser(emailInput: string, passwordInput: string): Prom
           is_active: true,
         };
 
-        const redirectUrl = isPetugas(userProfile.role) ? '/dashboard' : '/status-bansos';
+        const redirectUrl = isPetugas(userProfile.role) ? '/dashboard' : '/beranda';
         return { success: true, redirectUrl, user: userProfile };
       }
     } catch {
@@ -68,7 +68,7 @@ export async function loginUser(emailInput: string, passwordInput: string): Prom
       maxAge: 60 * 60 * 24 * 7, // 7 hari
     });
 
-    const redirectUrl = isPetugas(matchedUser.role) ? '/dashboard' : '/status-bansos';
+    const redirectUrl = isPetugas(matchedUser.role) ? '/dashboard' : '/beranda';
     return {
       success: true,
       redirectUrl,

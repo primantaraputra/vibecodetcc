@@ -16,9 +16,9 @@ export async function middleware(request: NextRequest) {
   const isMasyarakatRoute =
     path.startsWith('/profil') ||
     path.startsWith('/sanggahan') ||
-    path.startsWith('/status-bansos');
+    path.startsWith('/beranda');
 
-  // Khusus saat logout, hapus cookie dan jangan redirect kembali ke dashboard/status-bansos
+  // Khusus saat logout, hapus cookie dan jangan redirect kembali ke dashboard/beranda
   if (isAuthRoute && request.nextUrl.searchParams.get('logout') === 'true') {
     const response = NextResponse.next();
     response.cookies.delete('demo_session');
@@ -41,12 +41,12 @@ export async function middleware(request: NextRequest) {
         if (isPetugas(role)) {
           return NextResponse.redirect(new URL('/dashboard', request.url));
         } else {
-          return NextResponse.redirect(new URL('/status-bansos', request.url));
+          return NextResponse.redirect(new URL('/beranda', request.url));
         }
       }
 
       if (isPetugasRoute && !isPetugas(role)) {
-        return NextResponse.redirect(new URL('/status-bansos', request.url));
+        return NextResponse.redirect(new URL('/beranda', request.url));
       }
 
       return NextResponse.next();
@@ -100,12 +100,12 @@ export async function middleware(request: NextRequest) {
         if (isPetugas(role)) {
           return NextResponse.redirect(new URL('/dashboard', request.url));
         } else {
-          return NextResponse.redirect(new URL('/status-bansos', request.url));
+          return NextResponse.redirect(new URL('/beranda', request.url));
         }
       }
 
       if (isPetugasRoute && !isPetugas(role)) {
-        return NextResponse.redirect(new URL('/status-bansos', request.url));
+        return NextResponse.redirect(new URL('/beranda', request.url));
       }
     } catch {
       // Continue

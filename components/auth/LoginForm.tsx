@@ -47,7 +47,7 @@ export function LoginForm() {
       // Call Server Action asynchronously to sync HTTP-only server cookie
       loginUser(cleanEmail, passwordToUse).catch(() => {});
 
-      const redirectUrl = isPetugas(matchedDemo.role) ? '/dashboard' : '/status-bansos';
+      const redirectUrl = isPetugas(matchedDemo.role) ? '/dashboard' : '/beranda';
       window.location.href = redirectUrl;
       return;
     }
@@ -59,7 +59,7 @@ export function LoginForm() {
         JSON.stringify(localUser)
       )}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
 
-      const redirectUrl = isPetugas(localUser.role) ? '/dashboard' : '/status-bansos';
+      const redirectUrl = isPetugas(localUser.role) ? '/dashboard' : '/beranda';
       window.location.href = redirectUrl;
       return;
     }

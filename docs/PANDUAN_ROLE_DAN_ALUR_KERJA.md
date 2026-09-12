@@ -121,7 +121,7 @@ flowchart TD
     A5 -- Ditetapkan --> StFinal[Status: tersalurkan\nSK Terbit & Siap Cair]
     A5 -- Ditolak --> RejPusat([Ditolak Pusat])
     
-    StFinal --> WargaView[Warga Melihat Status di /status-bansos]
+    StFinal --> WargaView[Warga Melihat Status di /beranda]
     RejPusat --> SanggahFlow[Warga Mengajukan /sanggahan via AI]
 ```
 
