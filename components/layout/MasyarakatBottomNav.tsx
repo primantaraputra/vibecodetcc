@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Search, MessageSquarePlus, User } from 'lucide-react';
+import { Home, Search, MessageSquarePlus, Map, User } from 'lucide-react';
 
 export function MasyarakatBottomNav() {
   const pathname = usePathname();
@@ -25,6 +25,11 @@ export function MasyarakatBottomNav() {
       icon: MessageSquarePlus,
     },
     {
+      href: '/peta-transparansi',
+      label: 'Peta Transparan',
+      icon: Map,
+    },
+    {
       href: '/profil',
       label: 'Profil',
       icon: User,
@@ -34,9 +39,9 @@ export function MasyarakatBottomNav() {
   return (
     <nav
       aria-label="Navigasi Bawah Mobile"
-      className="fixed bottom-4 inset-x-4 z-40 max-w-sm mx-auto bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-2xl shadow-slate-900/15 rounded-full sm:hidden p-1.5 ring-1 ring-black/5"
+      className="fixed bottom-4 inset-x-3 z-40 max-w-md mx-auto bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-2xl shadow-slate-900/15 rounded-full sm:hidden p-1.5 ring-1 ring-black/5"
     >
-      <div className="grid grid-cols-4 items-center h-12">
+      <div className="grid grid-cols-5 items-center h-12">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -47,7 +52,7 @@ export function MasyarakatBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center py-1 px-1 rounded-full transition-all duration-200 select-none ${
+              className={`flex flex-col items-center justify-center py-1 px-0.5 rounded-full transition-all duration-200 select-none ${
                 isActive
                   ? 'text-teal-700 font-bold'
                   : 'text-slate-500 hover:text-slate-800 font-medium'
@@ -63,7 +68,7 @@ export function MasyarakatBottomNav() {
                 <Icon className="w-4 h-4" />
               </div>
               <span
-                className={`text-[10px] mt-0.5 tracking-tight ${
+                className={`text-[9.5px] mt-0.5 tracking-tight truncate max-w-[64px] text-center ${
                   isActive ? 'font-bold text-teal-800' : 'font-medium text-slate-500'
                 }`}
               >

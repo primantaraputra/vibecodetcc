@@ -4,9 +4,7 @@ import React, { useState } from 'react';
 import {
   Sliders,
   Sparkles,
-  Menu,
   Bot,
-  User,
 } from 'lucide-react';
 import NotificationBell from '@/components/layout/NotificationBell';
 import { StatusBannerHero, VerificationStage } from './StatusBannerHero';
@@ -40,10 +38,6 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
     window.dispatchEvent(new CustomEvent('open-bansos-ai'));
   };
 
-  const handleOpenMenu = () => {
-    window.dispatchEvent(new CustomEvent('open-mobile-menu'));
-  };
-
   const userInitial = profile?.nama_lengkap
     ? profile.nama_lengkap.charAt(0).toUpperCase()
     : 'W';
@@ -67,34 +61,11 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
             </h1>
           </div>
 
-          {/* Sisi Kanan: Avatar, Notifikasi, dan Menu Hamburger Mobile */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {/* User Avatar Circle */}
-            <div
-              className="w-9 h-9 rounded-full border-2 border-white/80 bg-white/20 text-white font-bold text-xs flex items-center justify-center shadow-xs overflow-hidden"
-              title={profile.nama_lengkap}
-            >
-              <img
-                src="/images/petugas_layanan_bansos.jpg"
-                alt={profile.nama_lengkap}
-                className="w-full h-full object-cover object-top"
-              />
-            </div>
-
-            {/* Notification Bell */}
+          {/* Sisi Kanan: Hanya Notifikasi dengan Circle Transparan */}
+          <div className="flex items-center flex-shrink-0">
             <NotificationBell
-              buttonClassName="text-white hover:text-white hover:bg-white/20 rounded-full"
+              buttonClassName="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur-xs border border-white/25 flex items-center justify-center transition shadow-xs cursor-pointer"
             />
-
-            {/* Menu Hamburger Button (Hanya tampil di mobile) */}
-            <button
-              type="button"
-              onClick={handleOpenMenu}
-              className="sm:hidden p-2 rounded-full text-white hover:bg-white/20 transition flex items-center justify-center cursor-pointer"
-              aria-label="Buka Menu Navigasi"
-            >
-              <Menu className="w-5 h-5 text-white" />
-            </button>
           </div>
         </div>
 
