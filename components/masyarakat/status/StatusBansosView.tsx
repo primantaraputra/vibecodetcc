@@ -1,20 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   Search,
-  GitMerge,
-  MessageSquarePlus,
-  Map,
-  User,
   ArrowRight,
-  Sparkles,
   Sliders,
-  ChevronRight,
-  ShieldCheck,
-  FileCheck,
 } from 'lucide-react';
 import { StatusBannerHero, VerificationStage } from './StatusBannerHero';
 import { AlurPencatatanStepper } from './AlurPencatatanStepper';
@@ -61,69 +52,6 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
   const scrollToAlur = () => {
     document.getElementById('alur-verifikasi')?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  // 5 Quick Service Buttons (Grid Cards)
-  const quickServices = [
-    {
-      id: 'alur',
-      label: 'Alur Proses',
-      icon: GitMerge,
-      onClick: scrollToAlur,
-    },
-    {
-      id: 'cek-status',
-      label: 'Cek Status',
-      icon: Search,
-      href: '/cek-status',
-    },
-    {
-      id: 'sanggahan',
-      label: 'Sanggahan',
-      icon: MessageSquarePlus,
-      href: '/sanggahan',
-    },
-    {
-      id: 'peta',
-      label: 'Peta Bansos',
-      icon: Map,
-      href: '/peta-transparansi',
-    },
-    {
-      id: 'profil',
-      label: 'Profil Saya',
-      icon: User,
-      href: '/profil',
-    },
-  ];
-
-  // 3 Articles / Educational Guidance Cards
-  const guideArticles = [
-    {
-      id: 'bps-14',
-      title: '14 Variabel Kemiskinan BPS',
-      category: 'Kriteria Resmi',
-      readTime: '3 mnt baca',
-      image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=500&q=80',
-      href: '/simulasi',
-    },
-    {
-      id: 'alur-5',
-      title: 'Alur 5 Tingkat Verifikasi',
-      category: 'Transparansi',
-      readTime: '4 mnt baca',
-      image: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=500&q=80',
-      href: '#alur-verifikasi',
-      onClick: scrollToAlur,
-    },
-    {
-      id: 'sanggah-ai',
-      title: 'Panduan Sanggahan Mandiri',
-      category: 'Layanan AI',
-      readTime: '2 mnt baca',
-      image: 'https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=500&q=80',
-      href: '/sanggahan',
-    },
-  ];
 
   return (
     <div className="space-y-6 pb-8">
@@ -179,46 +107,7 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
         </div>
       </section>
 
-      {/* 3. QUICK SERVICE BUTTONS (5 GRID CARDS) */}
-      <section>
-        <div className="grid grid-cols-5 gap-2 sm:gap-3">
-          {quickServices.map((service) => {
-            const Icon = service.icon;
-
-            const content = (
-              <div className="bg-white border border-slate-200/80 hover:border-teal-300 rounded-2xl p-2.5 sm:p-3.5 shadow-2xs hover:shadow-xs transition-all flex flex-col items-center justify-center text-center cursor-pointer group h-full">
-                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-teal-50/90 group-hover:bg-teal-600 text-teal-700 group-hover:text-white flex items-center justify-center transition-all duration-200 mb-1.5 shadow-2xs">
-                  <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
-                </div>
-                <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 group-hover:text-teal-900 leading-tight">
-                  {service.label}
-                </span>
-              </div>
-            );
-
-            if (service.href) {
-              return (
-                <Link key={service.id} href={service.href} className="block">
-                  {content}
-                </Link>
-              );
-            }
-
-            return (
-              <button
-                key={service.id}
-                type="button"
-                onClick={service.onClick}
-                className="w-full text-left"
-              >
-                {content}
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 4. SPOTLIGHT FEATURED BANNER ("Consult Online" style) */}
+      {/* 2. SPOTLIGHT FEATURED BANNER ("Consult Online" style) */}
       <section className="bg-gradient-to-r from-teal-50/90 via-emerald-50/70 to-teal-100/50 border border-teal-200/80 rounded-3xl p-4 sm:p-5 shadow-xs relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-2 max-w-md">
@@ -260,71 +149,7 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
         </div>
       </section>
 
-      {/* 5. INFORMASI & PANDUAN BANTUAN SOSIAL ("Health Tips" style) */}
-      <section className="space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-sm font-bold text-slate-900">
-            Informasi & Panduan Bantuan Sosial
-          </h2>
-          <Link
-            href="/cek-status"
-            className="text-xs font-semibold text-teal-700 hover:text-teal-800 inline-flex items-center gap-0.5"
-          >
-            <span>Lihat Semua</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {guideArticles.map((article) => {
-            const cardContent = (
-              <div className="bg-white border border-slate-200/80 hover:border-teal-300 rounded-2xl p-3 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between h-full group">
-                <div className="space-y-2">
-                  <div className="h-28 rounded-xl overflow-hidden bg-slate-100 relative">
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <span className="absolute top-2 left-2 bg-slate-900/75 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">
-                      {article.category}
-                    </span>
-                  </div>
-
-                  <h3 className="text-xs font-bold text-slate-900 group-hover:text-teal-800 leading-snug">
-                    {article.title}
-                  </h3>
-                </div>
-
-                <div className="pt-2 text-[10px] text-slate-400 font-medium">
-                  {article.readTime}
-                </div>
-              </div>
-            );
-
-            if (article.onClick) {
-              return (
-                <button
-                  key={article.id}
-                  type="button"
-                  onClick={article.onClick}
-                  className="text-left cursor-pointer h-full"
-                >
-                  {cardContent}
-                </button>
-              );
-            }
-
-            return (
-              <Link key={article.id} href={article.href} className="block h-full">
-                {cardContent}
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 6. ALUR PENGECEKAN BERJENJANG & SIMULASI STATUS */}
+      {/* 3. ALUR PENGECEKAN BERJENJANG & SIMULASI STATUS */}
       <section id="alur-verifikasi" className="space-y-4 pt-2">
         {/* Banner Simulasi Alur Proses */}
         <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
