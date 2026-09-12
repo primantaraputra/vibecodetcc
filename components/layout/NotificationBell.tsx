@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Bell,
@@ -29,6 +29,7 @@ export default function NotificationBell({ className = '', buttonClassName = '' 
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const fetchNotifs = async () => {
     try {
@@ -44,6 +45,32 @@ export default function NotificationBell({ className = '', buttonClassName = '' 
   useEffect(() => {
     fetchNotifs();
   }, []);
+
+  // Tutup popover jika user mengklik di luar atau menekan tombol Escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -75,7 +102,7 @@ export default function NotificationBell({ className = '', buttonClassName = '' 
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div ref={containerRef} className={`relative ${className}`}>
       {/* Bell Button */}
       <button
         type="button"
@@ -84,6 +111,7 @@ export default function NotificationBell({ className = '', buttonClassName = '' 
           buttonClassName || 'p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100'
         }`}
         aria-label="Notifikasi"
+        aria-expanded={isOpen}
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
@@ -93,40 +121,52 @@ export default function NotificationBell({ className = '', buttonClassName = '' 
         )}
       </button>
 
-      {/* Dropdown Popover */}
+      {/* Dropdown Popover & Mobile Backdrop */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 overflow-hidden animate-fadeIn">
-          {/* Header */}
-          <div className="p-3.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-900">Pemberitahuan & Notifikasi</span>
-              {unreadCount > 0 && (
-                <span className="text-[10px] font-semibold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full">
-                  {unreadCount} Baru
-                </span>
-              )}
-            </div>
+        <>
+          {/* Backdrop semi-transparan untuk tampilan mobile */}
+          <div
+            className="fixed inset-0 bg-slate-950/40 backdrop-blur-2xs z-[90] sm:hidden animate-fadeIn"
+            onClick={() => setIsOpen(false)}
+            aria-hidden="true"
+          />
 
-            <div className="flex items-center gap-2">
-              {unreadCount > 0 && (
+          {/* Kartu Popover Notifikasi: Rapi di Mobile (fixed inset-x) & Desktop (absolute) */}
+          <div className="fixed inset-x-3 top-16 sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2.5 sm:w-96 max-h-[82vh] sm:max-h-[32rem] bg-white rounded-2xl shadow-2xl border border-slate-200 z-[100] overflow-hidden flex flex-col animate-fadeIn">
+            {/* Header */}
+            <div className="p-3.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                  Pemberitahuan
+                </span>
+                {unreadCount > 0 && (
+                  <span className="text-[10px] font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full flex-shrink-0">
+                    {unreadCount} Baru
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {unreadCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleMarkAllRead}
+                    className="text-[11px] font-semibold text-teal-700 hover:text-teal-800 flex items-center gap-1 cursor-pointer whitespace-nowrap hover:underline px-1 py-0.5"
+                  >
+                    <CheckCheck className="w-3.5 h-3.5" />
+                    <span>Tandai Dibaca</span>
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={handleMarkAllRead}
-                  className="text-[11px] text-slate-500 hover:text-slate-800 flex items-center gap-1"
+                  onClick={() => setIsOpen(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition cursor-pointer"
+                  aria-label="Tutup"
                 >
-                  <CheckCheck className="w-3.5 h-3.5" />
-                  <span>Tandai Semua Dibaca</span>
+                  <X className="w-4 h-4" />
                 </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              </div>
             </div>
-          </div>
 
           {/* List */}
           <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
@@ -192,7 +232,8 @@ export default function NotificationBell({ className = '', buttonClassName = '' 
             )}
           </div>
         </div>
-      )}
-    </div>
-  );
+      </>
+    )}
+  </div>
+);
 }
