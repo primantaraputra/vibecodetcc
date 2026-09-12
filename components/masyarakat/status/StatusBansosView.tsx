@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Search,
-  ArrowRight,
   Sliders,
 } from 'lucide-react';
 import { StatusBannerHero, VerificationStage } from './StatusBannerHero';
@@ -47,10 +46,6 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
     } else {
       router.push('/cek-status');
     }
-  };
-
-  const scrollToAlur = () => {
-    document.getElementById('alur-verifikasi')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -107,49 +102,7 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
         </div>
       </section>
 
-      {/* 2. SPOTLIGHT FEATURED BANNER ("Consult Online" style) */}
-      <section className="bg-gradient-to-r from-teal-50/90 via-emerald-50/70 to-teal-100/50 border border-teal-200/80 rounded-3xl p-4 sm:p-5 shadow-xs relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-2 max-w-md">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-900 border border-amber-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span>Tahap 2: Pengecekan RW (Sedang Berjalan)</span>
-            </div>
-
-            <h2 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
-              Status Verifikasi Bansos Anda
-            </h2>
-
-            <p className="text-xs text-slate-600 leading-relaxed">
-              No. Pengajuan: <strong className="font-mono text-slate-800">PB-202609-0001</strong>. Berkas sedang dalam musyawarah lingkungan tingkat RW untuk verifikasi keabsahan data usulan.
-            </p>
-
-            <div className="pt-1">
-              <button
-                type="button"
-                onClick={scrollToAlur}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-xs hover:shadow-sm transition cursor-pointer"
-              >
-                <span>Cek Detail Alur Proses</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Smartphone digital verification mockup */}
-          <div className="hidden sm:flex items-center justify-center flex-shrink-0">
-            <div className="w-24 h-28 sm:w-28 sm:h-32 rounded-2xl overflow-hidden shadow-md border-2 border-white bg-white">
-              <img
-                src="/images/verifikasi_bansos_phone.jpg"
-                alt="Verifikasi Bansos Mobile"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. ALUR PENGECEKAN BERJENJANG & SIMULASI STATUS */}
+      {/* 2. ALUR PENGECEKAN BERJENJANG & SIMULASI STATUS */}
       <section id="alur-verifikasi" className="space-y-4 pt-2">
         {/* Banner Simulasi Alur Proses */}
         <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
