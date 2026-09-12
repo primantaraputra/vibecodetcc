@@ -20,7 +20,12 @@ import {
 } from '@/lib/actions/notifications';
 import { Skeleton } from '@/components/ui';
 
-export default function NotificationBell() {
+interface NotificationBellProps {
+  className?: string;
+  buttonClassName?: string;
+}
+
+export default function NotificationBell({ className = '', buttonClassName = '' }: NotificationBellProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,22 +63,26 @@ export default function NotificationBell() {
     switch (type) {
       case 'status_pengajuan':
         return <CheckCircle2 className="w-4 h-4 text-emerald-600" />;
-      case 'sanggahan':
+      case 'jadwal_salur':
+        return <Clock className="w-4 h-4 text-blue-600" />;
+      case 'sanggahan_update':
         return <MessageSquareWarning className="w-4 h-4 text-amber-600" />;
-      case 'survei':
-        return <FileText className="w-4 h-4 text-indigo-600" />;
+      case 'dokumen_update':
+        return <FileText className="w-4 h-4 text-purple-600" />;
       default:
         return <Info className="w-4 h-4 text-blue-600" />;
     }
   };
 
   return (
-    <div className="relative">
+    <div className={`relative ${className}`}>
       {/* Bell Button */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition focus:outline-none"
+        className={`relative p-2 rounded-xl transition focus:outline-none cursor-pointer ${
+          buttonClassName || 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+        }`}
         aria-label="Notifikasi"
       >
         <Bell className="w-5 h-5" />
