@@ -93,7 +93,7 @@ export default function ChatbotBansosModal() {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-22 sm:bottom-6 right-4 sm:right-6 z-50 p-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2.5 group cursor-pointer"
+          className="fixed bottom-[84px] sm:bottom-6 right-4 sm:right-6 z-50 p-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2.5 group cursor-pointer"
           aria-label="Buka Asisten AI Bansos"
         >
           <div className="relative">
@@ -108,7 +108,7 @@ export default function ChatbotBansosModal() {
 
       {/* Chat Window Modal */}
       {isOpen && (
-        <div className="fixed bottom-22 sm:bottom-6 right-4 sm:right-6 z-50 w-[92vw] sm:w-[400px] h-[520px] max-h-[75vh] sm:max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-slideUp">
+        <div className="fixed bottom-[84px] sm:bottom-6 right-4 sm:right-6 z-50 w-[92vw] sm:w-[400px] h-[520px] max-h-[75vh] sm:max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-slideUp">
           {/* Header */}
           <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
