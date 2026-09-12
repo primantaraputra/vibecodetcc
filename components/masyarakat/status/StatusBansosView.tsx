@@ -39,8 +39,8 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
             </h1>
           </div>
 
-          {/* Sisi Kanan: Notifikasi dengan Circle Transparan 100% Rounded */}
-          <div className="flex items-center flex-shrink-0 relative z-40">
+          {/* Sisi Kanan: Notifikasi dengan Circle Transparan 100% Rounded (Hanya tampil di mobile, di desktop sudah ada di header atas) */}
+          <div className="flex items-center flex-shrink-0 relative z-40 sm:hidden">
             <NotificationBell
               buttonClassName="w-10 h-10 rounded-full aspect-square bg-white/15 hover:bg-white/25 text-white backdrop-blur-xs border border-white/25 flex items-center justify-center transition shadow-xs cursor-pointer"
             />
