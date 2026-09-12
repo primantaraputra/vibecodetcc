@@ -42,6 +42,13 @@ export default function ChatbotBansosModal() {
     }
   }, [messages, isOpen]);
 
+  // Event listener untuk membuka chatbot dari tombol Asisten AI di banner
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener('open-bansos-ai', handleOpen);
+    return () => window.removeEventListener('open-bansos-ai', handleOpen);
+  }, []);
+
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputQuery;
     if (!text.trim()) return;
@@ -88,27 +95,9 @@ export default function ChatbotBansosModal() {
 
   return (
     <>
-      {/* Floating Trigger Button */}
-      {!isOpen && (
-        <button
-          type="button"
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-[84px] sm:bottom-6 right-4 sm:right-6 z-50 p-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2.5 group cursor-pointer"
-          aria-label="Buka Asisten AI Bansos"
-        >
-          <div className="relative">
-            <Sparkles className="w-5 h-5 animate-pulse" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white" />
-          </div>
-          <span className="text-xs font-semibold pr-1 hidden sm:inline-block">
-            Tanya AI Bansos
-          </span>
-        </button>
-      )}
-
-      {/* Chat Window Modal */}
+      {/* Chat Window Modal (Dibuka via tombol Asisten AI di banner) */}
       {isOpen && (
-        <div className="fixed bottom-[84px] sm:bottom-6 right-4 sm:right-6 z-50 w-[92vw] sm:w-[400px] h-[520px] max-h-[75vh] sm:max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-slideUp">
+        <div className="fixed inset-x-3 sm:inset-x-auto bottom-20 sm:bottom-6 right-auto sm:right-6 sm:w-[400px] h-[520px] max-h-[75vh] sm:max-h-[85vh] z-50 bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-slideUp">
           {/* Header */}
           <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">

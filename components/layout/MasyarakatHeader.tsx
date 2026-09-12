@@ -83,9 +83,22 @@ export function MasyarakatHeader({ profile }: MasyarakatHeaderProps) {
     };
   }, [isMenuOpen]);
 
+  // Listener untuk membuka bottom sheet menu dari banner beranda mobile
+  useEffect(() => {
+    const handleOpenMenu = () => setIsMenuOpen(true);
+    window.addEventListener('open-mobile-menu', handleOpenMenu);
+    return () => window.removeEventListener('open-mobile-menu', handleOpenMenu);
+  }, []);
+
+  const isBeranda = pathname === '/beranda';
+
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-2xs">
+      <header
+        className={`sticky top-0 z-40 bg-white border-b border-slate-200 shadow-2xs ${
+          isBeranda ? 'hidden sm:block' : 'block'
+        }`}
+      >
         <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
           {/* Mobile Menu Button: Di sisi kiri sesuai tampilan mobile modern */}
           <div className="flex items-center sm:hidden">
