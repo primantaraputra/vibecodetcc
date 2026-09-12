@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { LogOut } from 'lucide-react';
-import { logoutUser } from '@/lib/actions/auth';
 
 interface LogoutButtonProps {
   variant?: 'header' | 'sidebar';
@@ -19,17 +18,16 @@ export function LogoutButton({ variant = 'header', className = '' }: LogoutButto
     setIsLoggingOut(true);
 
     try {
-      // 1. Immediately delete client-side cookie for instant 0ms state reset
+      // 1. Hapus cookie di sisi klien
       document.cookie = 'demo_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; SameSite=Lax';
 
-      // 2. Trigger server logout in parallel
-      logoutUser().catch(() => {});
+      // 2. Panggil API route logout di server dan tunggu hingga selesai
+      await fetch('/api/auth/logout', { method: 'POST' });
 
-      // 3. Immediately redirect to /login
-      window.location.href = '/login';
+      // 3. Arahkan ke halaman login dengan query logout=true
+      window.location.href = '/login?logout=true';
     } catch {
-      // Fallback
-      window.location.href = '/login';
+      window.location.href = '/login?logout=true';
     }
   };
 
@@ -39,7 +37,7 @@ export function LogoutButton({ variant = 'header', className = '' }: LogoutButto
         type="button"
         onClick={handleLogout}
         disabled={isLoggingOut}
-        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 transition disabled:opacity-70 disabled:cursor-not-allowed ${className}`}
+        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 transition cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed ${className}`}
       >
         {isLoggingOut ? (
           <>
@@ -62,7 +60,7 @@ export function LogoutButton({ variant = 'header', className = '' }: LogoutButto
       type="button"
       onClick={handleLogout}
       disabled={isLoggingOut}
-      className={`text-xs text-red-600 hover:bg-red-50 px-2 py-1 rounded transition flex items-center gap-1.5 disabled:opacity-70 disabled:cursor-not-allowed ${className}`}
+      className={`text-xs text-red-600 hover:bg-red-50 px-2 py-1 rounded transition flex items-center gap-1.5 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed ${className}`}
       title="Keluar dari akun"
     >
       {isLoggingOut ? (

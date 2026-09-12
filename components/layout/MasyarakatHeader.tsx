@@ -73,9 +73,6 @@ export function MasyarakatHeader({ profile }: MasyarakatHeaderProps) {
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-teal-600' : 'text-slate-400'}`} />
                 <span>{tab.label}</span>
-                {tab.href === '/status-bansos' && (
-                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse ml-0.5" title="Ada progres aktif" />
-                )}
               </Link>
             );
           })}

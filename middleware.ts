@@ -18,9 +18,17 @@ export async function middleware(request: NextRequest) {
     path.startsWith('/sanggahan') ||
     path.startsWith('/status-bansos');
 
+  // Khusus saat logout, hapus cookie dan jangan redirect kembali ke dashboard/status-bansos
+  if (isAuthRoute && request.nextUrl.searchParams.get('logout') === 'true') {
+    const response = NextResponse.next();
+    response.cookies.delete('demo_session');
+    response.cookies.set('demo_session', '', { path: '/', maxAge: 0 });
+    return response;
+  }
+
   // 1. Cek Demo Session Cookie
   const demoCookie = request.cookies.get('demo_session')?.value;
-  if (demoCookie) {
+  if (demoCookie && demoCookie.trim() !== '') {
     try {
       let rawCookie = demoCookie;
       try {
