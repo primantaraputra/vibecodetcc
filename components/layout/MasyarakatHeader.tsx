@@ -87,18 +87,33 @@ export function MasyarakatHeader({ profile }: MasyarakatHeaderProps) {
     <>
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-2xs">
         <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
+          {/* Mobile Menu Button: Di sisi kiri sesuai tampilan mobile modern */}
+          <div className="flex items-center sm:hidden">
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              className="p-2 -ml-1 rounded-xl text-slate-700 hover:text-teal-700 hover:bg-slate-100 transition-colors flex items-center justify-center cursor-pointer"
+              aria-label={isMenuOpen ? 'Tutup Menu' : 'Buka Menu Navigasi'}
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? <X className="w-5 h-5 text-slate-700" /> : <Menu className="w-5 h-5 text-slate-700" />}
+            </button>
+          </div>
+
+          {/* Logo Brand: Tengah di mobile, Kiri di desktop */}
           <Link href="/beranda" className="flex items-center gap-2 hover:opacity-90 transition">
             <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center text-white shadow-xs">
               <ShieldCheck className="w-4 h-4" />
             </div>
-            <div>
+            <div className="text-left">
               <span className="font-bold text-slate-900 text-sm block leading-tight">Portal Warga</span>
               <span className="text-[10px] text-teal-600 font-semibold tracking-wider block">SI-BANSOS KECAMATAN</span>
             </div>
           </Link>
 
+          {/* Sisi Kanan: Notifikasi di mobile, Notifikasi + Profil + Logout di desktop */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Tombol notifikasi tetap berada di pojok kanan atas sebelah kiri tombol menu */}
+            {/* Tombol notifikasi di pojok kanan atas */}
             <NotificationBell />
 
             {/* Desktop User Info */}
@@ -111,17 +126,6 @@ export function MasyarakatHeader({ profile }: MasyarakatHeaderProps) {
             <div className="hidden sm:block">
               <LogoutButton variant="header" />
             </div>
-
-            {/* Mobile Menu Button: Tepat di posisi tombol logout untuk ukuran layar mobile */}
-            <button
-              type="button"
-              onClick={() => setIsMenuOpen((prev) => !prev)}
-              className="sm:hidden p-2 rounded-lg text-slate-700 hover:text-teal-700 hover:bg-slate-100 border border-slate-200 transition-colors flex items-center justify-center cursor-pointer"
-              aria-label={isMenuOpen ? 'Tutup Menu' : 'Buka Menu Navigasi'}
-              aria-expanded={isMenuOpen}
-            >
-              {isMenuOpen ? <X className="w-4 h-4 text-slate-700" /> : <Menu className="w-4 h-4 text-slate-700" />}
-            </button>
           </div>
         </div>
       </header>

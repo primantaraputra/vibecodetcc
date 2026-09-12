@@ -1,26 +1,22 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
-  Sliders,
-  Eye,
-  EyeOff,
-  FileText,
-  ShieldCheck,
-  Sparkles,
-  ChevronRight,
-  Layers,
-  MapPin,
   Search,
+  GitMerge,
+  MessageSquarePlus,
+  Map,
   User,
-  X,
-  CheckCircle2,
-  Calendar,
-  Building2,
-  Info,
+  ArrowRight,
+  Sparkles,
+  Sliders,
+  ChevronRight,
+  ShieldCheck,
+  FileCheck,
 } from 'lucide-react';
-import { VerificationStage } from './StatusBannerHero';
+import { StatusBannerHero, VerificationStage } from './StatusBannerHero';
 import { AlurPencatatanStepper } from './AlurPencatatanStepper';
 import { UserProfile } from '@/lib/types';
 
@@ -29,98 +25,23 @@ interface StatusBansosViewProps {
 }
 
 export function StatusBansosView({ profile }: StatusBansosViewProps) {
-  // Default stage is 'rw' as requested by user
+  const router = useRouter();
   const [currentStage, setCurrentStage] = useState<VerificationStage>('rw');
   const [isSimulating, setIsSimulating] = useState(false);
-  const [showBalance, setShowBalance] = useState(true);
-  const [showSkModal, setShowSkModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Stage simulation list
+  // Extract first name for warm friendly greeting
+  const firstName = profile?.nama_lengkap
+    ? profile.nama_lengkap.split(' ')[0]
+    : 'Warga';
+
   const simulationOptions: { stage: VerificationStage; label: string }[] = [
     { stage: 'rt', label: '1. Pengecekan RT' },
     { stage: 'rw', label: '2. Pengecekan RW (Kondisi Saat Ini)' },
     { stage: 'kelurahan', label: '3. Pengecekan Kelurahan' },
     { stage: 'kecamatan', label: '4. Pengecekan Kecamatan' },
-    { stage: 'tersalurkan', label: '5. Penetapan Petugas Pusat (Selesai)' },
+    { stage: 'tersalurkan', label: '5. Penetapan Petugas Pusat' },
   ];
-
-  const stageDetails: Record<
-    VerificationStage,
-    {
-      title: string;
-      badge: string;
-      badgeColor: string;
-      dotColor: string;
-      percentage: number;
-      stepText: string;
-      pic: string;
-      phone: string;
-      description: string;
-    }
-  > = {
-    rt: {
-      title: 'Menunggu Pengecekan RT',
-      badge: 'Tahap 1: Pengecekan RT',
-      badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
-      dotColor: 'bg-blue-500',
-      percentage: 20,
-      stepText: 'Tahap 1 dari 5 Berjalan',
-      pic: 'Ahmad Subarjo',
-      phone: '0812-7788-9901',
-      description:
-        'Pengajuan baru dibuat. Petugas RT dijadwalkan melakukan pengecekan data dan survei lapangan sosial-ekonomi langsung ke tempat tinggal Anda.',
-    },
-    rw: {
-      title: 'Menunggu Pengecekan RW',
-      badge: 'Tahap 2: Pengecekan RW',
-      badgeColor: 'bg-amber-50 text-amber-800 border-amber-200',
-      dotColor: 'bg-amber-500',
-      percentage: 40,
-      stepText: 'Tahap 2 dari 5 Berjalan',
-      pic: 'Drs. Bambang Wijaya',
-      phone: '0813-2233-4455',
-      description:
-        'Pengecekan lapangan oleh Petugas RT telah selesai. Saat ini berkas dalam proses pengecekan dan verifikasi musyawarah lingkungan tingkat RW.',
-    },
-    kelurahan: {
-      title: 'Menunggu Pengecekan Kelurahan',
-      badge: 'Tahap 3: Pengecekan Kelurahan',
-      badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-      dotColor: 'bg-indigo-500',
-      percentage: 60,
-      stepText: 'Tahap 3 dari 5 Berjalan',
-      pic: 'Hj. Ratna Sari, S.Sos',
-      phone: '0821-3344-5566',
-      description:
-        'Hasil pengecekan RW telah diterima. Berkas saat ini sedang dalam pengecekan administratif dan kroscek data DTKS oleh Petugas Kelurahan.',
-    },
-    kecamatan: {
-      title: 'Menunggu Pengecekan Kecamatan',
-      badge: 'Tahap 4: Pengecekan Kecamatan',
-      badgeColor: 'bg-teal-50 text-teal-700 border-teal-200',
-      dotColor: 'bg-teal-500',
-      percentage: 80,
-      stepText: 'Tahap 4 dari 5 Berjalan',
-      pic: 'Drs. H. Mulyadi',
-      phone: '0811-9988-7766',
-      description:
-        'Kelurahan telah menyelesaikan pengecekan. Berkas sedang dalam tahap pengecekan dan rekapitulasi data tingkat kecamatan sebelum diteruskan ke Petugas Pusat.',
-    },
-    tersalurkan: {
-      title: 'Ditetapkan Petugas Pusat & Siap Disalurkan',
-      badge: 'Selesai: Ditetapkan Pusat',
-      badgeColor: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-      dotColor: 'bg-emerald-500',
-      percentage: 100,
-      stepText: 'Tahap 5 dari 5 Selesai',
-      pic: 'Petugas Pusat / Admin',
-      phone: 'Call Center 1500-299',
-      description:
-        'Seluruh tahapan pengecekan data selesai. Penetapan resmi penerima bantuan sosial telah disahkan oleh Petugas Pusat/Admin dan dana siap disalurkan.',
-    },
-  };
-
-  const currentStageConfig = stageDetails[currentStage];
 
   const handleStageChange = (stage: VerificationStage) => {
     setIsSimulating(true);
@@ -128,392 +49,320 @@ export function StatusBansosView({ profile }: StatusBansosViewProps) {
     setTimeout(() => setIsSimulating(false), 250);
   };
 
-  // Close modal on escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowSkModal(false);
-    };
-    if (showSkModal) {
-      document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/cek-status?q=${encodeURIComponent(searchQuery.trim())}`);
     } else {
-      document.body.style.overflow = '';
+      router.push('/cek-status');
     }
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [showSkModal]);
+  };
+
+  const scrollToAlur = () => {
+    document.getElementById('alur-verifikasi')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // 5 Quick Service Buttons (Grid Cards)
+  const quickServices = [
+    {
+      id: 'alur',
+      label: 'Alur Proses',
+      icon: GitMerge,
+      onClick: scrollToAlur,
+    },
+    {
+      id: 'cek-status',
+      label: 'Cek Status',
+      icon: Search,
+      href: '/cek-status',
+    },
+    {
+      id: 'sanggahan',
+      label: 'Sanggahan',
+      icon: MessageSquarePlus,
+      href: '/sanggahan',
+    },
+    {
+      id: 'peta',
+      label: 'Peta Bansos',
+      icon: Map,
+      href: '/peta-transparansi',
+    },
+    {
+      id: 'profil',
+      label: 'Profil Saya',
+      icon: User,
+      href: '/profil',
+    },
+  ];
+
+  // 3 Articles / Educational Guidance Cards
+  const guideArticles = [
+    {
+      id: 'bps-14',
+      title: '14 Variabel Kemiskinan BPS',
+      category: 'Kriteria Resmi',
+      readTime: '3 mnt baca',
+      image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=500&q=80',
+      href: '/simulasi',
+    },
+    {
+      id: 'alur-5',
+      title: 'Alur 5 Tingkat Verifikasi',
+      category: 'Transparansi',
+      readTime: '4 mnt baca',
+      image: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=500&q=80',
+      href: '#alur-verifikasi',
+      onClick: scrollToAlur,
+    },
+    {
+      id: 'sanggah-ai',
+      title: 'Panduan Sanggahan Mandiri',
+      category: 'Layanan AI',
+      readTime: '2 mnt baca',
+      image: 'https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=500&q=80',
+      href: '/sanggahan',
+    },
+  ];
 
   return (
-    <div className="space-y-5 pb-16">
-      {/* 1. TOP GREETING & CITIZEN PROFILE HEADER */}
-      <div className="flex items-center justify-between pt-1">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-teal-600 to-emerald-500 text-white font-bold text-base flex items-center justify-center shadow-xs border-2 border-white ring-2 ring-teal-100 flex-shrink-0">
-            {profile.nama_lengkap ? profile.nama_lengkap.charAt(0).toUpperCase() : 'B'}
-          </div>
-          <div className="min-w-0">
-            <h1 className="text-sm sm:text-base font-bold text-slate-900 leading-tight truncate">
-              Selamat Datang, {profile.nama_lengkap || 'Budi Santoso'} 👋
+    <div className="space-y-6 pb-8">
+      {/* 1. HERO GREETING & CIVIC OFFICER AVATAR */}
+      <section className="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-xs relative overflow-hidden">
+        {/* Soft decorative background shape */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-teal-50 via-emerald-50/40 to-transparent rounded-bl-full pointer-events-none" />
+
+        <div className="flex items-center justify-between gap-4 relative z-10">
+          <div className="space-y-1.5 max-w-lg">
+            <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-700">
+              <span>Halo, {firstName}</span>
+              <span className="text-amber-500 text-base">👋</span>
+            </div>
+            <h1 className="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug">
+              Bagaimana kami dapat membantu Anda hari ini?
             </h1>
-            <p className="text-[11px] text-slate-500 font-mono mt-0.5 truncate">
-              NIK: {profile.nik ? `${profile.nik.slice(0, 6)}••••••${profile.nik.slice(-4)}` : '327301••••••0007'} • Desil 1 (Sangat Rentan)
+            <p className="text-xs text-slate-500 hidden sm:block pt-0.5">
+              Pantau status pengecekan bantuan sosial berjenjang secara transparan dan akuntabel.
             </p>
           </div>
-        </div>
 
-        <div className="hidden xs:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-semibold flex-shrink-0">
-          <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
-          <span>Warga Terverifikasi</span>
-        </div>
-      </div>
-
-      {/* 2. PRIMARY STATUS & BALANCE HERO CARD ("Balance" Card) */}
-      <div className="space-y-1.5">
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block px-0.5">
-          Status Bantuan Sosial
-        </span>
-        <div
-          className={`bg-white rounded-3xl border border-slate-200/90 p-5 shadow-xs relative overflow-hidden transition-all duration-300 ${
-            isSimulating ? 'opacity-60 scale-[0.99]' : 'opacity-100 scale-100'
-          }`}
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-500 font-medium">Alokasi Bantuan Program</span>
-                <button
-                  type="button"
-                  onClick={() => setShowBalance(!showBalance)}
-                  className="text-slate-400 hover:text-slate-700 transition cursor-pointer p-0.5"
-                  title={showBalance ? 'Sembunyikan Nominal' : 'Tampilkan Nominal'}
-                  aria-label={showBalance ? 'Sembunyikan Nominal' : 'Tampilkan Nominal'}
-                >
-                  {showBalance ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-
-              <div className="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-baseline gap-1.5">
-                <span>{showBalance ? 'Rp 600.000' : 'Rp ••••••••'}</span>
-                <span className="text-xs font-normal text-slate-500">/ bulan (PKH & BPNT)</span>
-              </div>
-
-              <p className="text-[11px] text-slate-500 font-mono">
-                No. Pengajuan: PB-202609-0001 • Diperbarui: 10 September 2026
-              </p>
-            </div>
-
-            {/* Quick Action Pill (Matches "Top Up" Pill from Reference) */}
-            <button
-              type="button"
-              onClick={() => setShowSkModal(true)}
-              className="px-4 py-2 rounded-full bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-xs hover:shadow-sm transition-all duration-200 flex items-center gap-1.5 flex-shrink-0 cursor-pointer active:scale-95"
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Detail SK</span>
-            </button>
-          </div>
-
-          {/* Current Status Badge Bar */}
-          <div className="mt-3.5 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
-            <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border ${currentStageConfig.badgeColor}`}
-            >
-              <span className={`w-2 h-2 rounded-full ${currentStageConfig.dotColor} animate-pulse`} />
-              <span>{currentStageConfig.badge}</span>
-            </span>
-            <span className="text-[11px] text-slate-500">
-              Kewenangan Penetapan: <span className="font-semibold text-slate-700">Petugas Pusat</span>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. PROGRES PENGECEKAN BERJENJANG ("Usage" Card) */}
-      <div className="space-y-1.5">
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block px-0.5">
-          Progres Pengecekan Berjenjang
-        </span>
-        <div
-          className={`bg-white rounded-3xl border border-slate-200/90 p-5 shadow-xs space-y-4 transition-all duration-300 ${
-            isSimulating ? 'opacity-60' : 'opacity-100'
-          }`}
-        >
-          {/* Header Row */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center flex-shrink-0">
-                <Layers className="w-4 h-4" />
-              </div>
-              <div>
-                <h3 className="text-xs font-bold text-slate-800 leading-tight">Alur Verifikasi Lapangan</h3>
-                <p className="text-[11px] text-slate-500">{currentStageConfig.title}</p>
-              </div>
-            </div>
-            <span className="text-xs font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200/60">
-              {currentStageConfig.percentage}% Selesai
-            </span>
-          </div>
-
-          {/* Progress Bar Container */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="font-semibold text-slate-700">{currentStageConfig.stepText}</span>
-              <span className="text-slate-500 font-mono">5 Tahapan Pengecekan</span>
-            </div>
-            <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5">
-              <div
-                className="h-full bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 rounded-full transition-all duration-500"
-                style={{ width: `${currentStageConfig.percentage}%` }}
+          {/* Petugas Layanan Bansos Illustration */}
+          <div className="relative flex-shrink-0">
+            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-tr from-teal-600/10 via-emerald-500/10 to-teal-100 p-1 shadow-xs overflow-hidden border border-teal-200/60">
+              <img
+                src="/images/petugas_layanan_bansos.jpg"
+                alt="Petugas Layanan Bansos"
+                className="w-full h-full object-cover object-top rounded-xl"
               />
             </div>
           </div>
+        </div>
 
-          {/* Stage Description Box */}
-          <div className="p-3 bg-slate-50 border border-slate-200/70 rounded-2xl text-xs text-slate-600 leading-relaxed">
-            {currentStageConfig.description}
+        {/* 2. MODERN SEARCH BAR */}
+        <div className="mt-4 pt-2 relative z-10">
+          <form onSubmit={handleSearchSubmit} className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari status pengajuan, NIK, atau layanan bansos..."
+              className="w-full bg-slate-50/80 hover:bg-white focus:bg-white border border-slate-200/90 rounded-2xl py-2.5 sm:py-3 pl-4 pr-12 text-xs text-slate-800 placeholder-slate-400 shadow-2xs focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-600 transition duration-200"
+            />
+            <button
+              type="submit"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center transition-colors shadow-2xs cursor-pointer"
+              aria-label="Cari Layanan"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* 3. QUICK SERVICE BUTTONS (5 GRID CARDS) */}
+      <section>
+        <div className="grid grid-cols-5 gap-2 sm:gap-3">
+          {quickServices.map((service) => {
+            const Icon = service.icon;
+
+            const content = (
+              <div className="bg-white border border-slate-200/80 hover:border-teal-300 rounded-2xl p-2.5 sm:p-3.5 shadow-2xs hover:shadow-xs transition-all flex flex-col items-center justify-center text-center cursor-pointer group h-full">
+                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-teal-50/90 group-hover:bg-teal-600 text-teal-700 group-hover:text-white flex items-center justify-center transition-all duration-200 mb-1.5 shadow-2xs">
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 group-hover:text-teal-900 leading-tight">
+                  {service.label}
+                </span>
+              </div>
+            );
+
+            if (service.href) {
+              return (
+                <Link key={service.id} href={service.href} className="block">
+                  {content}
+                </Link>
+              );
+            }
+
+            return (
+              <button
+                key={service.id}
+                type="button"
+                onClick={service.onClick}
+                className="w-full text-left"
+              >
+                {content}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 4. SPOTLIGHT FEATURED BANNER ("Consult Online" style) */}
+      <section className="bg-gradient-to-r from-teal-50/90 via-emerald-50/70 to-teal-100/50 border border-teal-200/80 rounded-3xl p-4 sm:p-5 shadow-xs relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+          <div className="space-y-2 max-w-md">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-900 border border-amber-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <span>Tahap 2: Pengecekan RW (Sedang Berjalan)</span>
+            </div>
+
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+              Status Verifikasi Bansos Anda
+            </h2>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              No. Pengajuan: <strong className="font-mono text-slate-800">PB-202609-0001</strong>. Berkas sedang dalam musyawarah lingkungan tingkat RW untuk verifikasi keabsahan data usulan.
+            </p>
+
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={scrollToAlur}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-xs hover:shadow-sm transition cursor-pointer"
+              >
+                <span>Cek Detail Alur Proses</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
-          {/* Bottom Split Metrics */}
-          <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-3 text-xs">
-            <div>
-              <span className="text-slate-400 block text-[10.5px]">Penanggung Jawab</span>
-              <span className="font-semibold text-slate-800 text-xs truncate block">
-                {currentStageConfig.pic}
-              </span>
-            </div>
-            <div>
-              <span className="text-slate-400 block text-[10.5px]">Kontak Pengecekan</span>
-              <span className="font-medium text-slate-700 font-mono text-xs truncate block">
-                {currentStageConfig.phone}
-              </span>
+          {/* Smartphone digital verification mockup */}
+          <div className="hidden sm:flex items-center justify-center flex-shrink-0">
+            <div className="w-24 h-28 sm:w-28 sm:h-32 rounded-2xl overflow-hidden shadow-md border-2 border-white bg-white">
+              <img
+                src="/images/verifikasi_bansos_phone.jpg"
+                alt="Verifikasi Bansos Mobile"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 4. OFFERS FOR YOU / HORIZONTAL LAYANAN CAROUSEL */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between px-0.5">
-          <div>
-            <h3 className="text-sm font-bold text-slate-900">Layanan Untuk Anda</h3>
-            <p className="text-[11px] text-slate-500">Fitur bantuan, transparansi, dan pengecekan data</p>
-          </div>
+      {/* 5. INFORMASI & PANDUAN BANTUAN SOSIAL ("Health Tips" style) */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-sm font-bold text-slate-900">
+            Informasi & Panduan Bantuan Sosial
+          </h2>
           <Link
-            href="/sanggahan"
-            className="text-xs font-semibold text-teal-700 hover:text-teal-800 flex items-center gap-0.5 transition"
+            href="/cek-status"
+            className="text-xs font-semibold text-teal-700 hover:text-teal-800 inline-flex items-center gap-0.5"
           >
-            <span>Semua</span>
+            <span>Lihat Semua</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {/* Scrollable Horizontal Cards */}
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x -mx-4 px-4 sm:mx-0 sm:px-0">
-          {/* Card 1: Featured Gradient Card (Matches Purple Promo Card in Reference) */}
-          <div className="w-60 sm:w-64 flex-shrink-0 snap-start rounded-3xl bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-800 text-white p-4.5 flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-sm transition">
-            <div className="space-y-2 relative z-10">
-              <span className="text-[10px] font-bold bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 text-teal-50">
-                <Sparkles className="w-3 h-3 text-amber-300" />
-                <span>Layanan AI Unggulan</span>
-              </span>
-              <h4 className="text-sm font-bold leading-snug">Ajukan Sanggahan AI</h4>
-              <p className="text-[11px] text-teal-50/90 leading-relaxed">
-                Laporkan ketidaksesuaian data survei rumah atau status ekonomi secara transparan.
-              </p>
-            </div>
-            <Link
-              href="/sanggahan"
-              className="mt-3 px-3 py-1.5 bg-white text-teal-800 text-xs font-bold rounded-xl shadow-xs hover:bg-teal-50 transition inline-flex items-center justify-center gap-1 w-fit relative z-10"
-            >
-              <span>Mulai Sanggah</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {guideArticles.map((article) => {
+            const cardContent = (
+              <div className="bg-white border border-slate-200/80 hover:border-teal-300 rounded-2xl p-3 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between h-full group">
+                <div className="space-y-2">
+                  <div className="h-28 rounded-xl overflow-hidden bg-slate-100 relative">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <span className="absolute top-2 left-2 bg-slate-900/75 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">
+                      {article.category}
+                    </span>
+                  </div>
 
-          {/* Card 2: Peta Transparansi */}
-          <div className="w-52 sm:w-56 flex-shrink-0 snap-start rounded-3xl bg-white border border-slate-200/90 p-4.5 flex flex-col justify-between shadow-xs hover:border-teal-300 transition">
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full inline-block">
-                Transparansi
-              </span>
-              <h4 className="text-xs font-bold text-slate-800">Peta Kuota Anggaran</h4>
-              <p className="text-sm font-bold text-slate-900 font-mono">Rp 2,4 Miliar</p>
-              <p className="text-[11px] text-slate-500 line-clamp-2">
-                Distribusi kuota bansos per-kelurahan se-Kecamatan Sukamaju.
-              </p>
-            </div>
-            <Link
-              href="/peta-transparansi"
-              className="mt-3 text-xs font-semibold text-teal-700 hover:text-teal-800 flex items-center gap-1"
-            >
-              <span>Buka Peta</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          {/* Card 3: Cek Status NIK/KK */}
-          <div className="w-52 sm:w-56 flex-shrink-0 snap-start rounded-3xl bg-white border border-slate-200/90 p-4.5 flex flex-col justify-between shadow-xs hover:border-teal-300 transition">
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full inline-block">
-                Cek Terbuka
-              </span>
-              <h4 className="text-xs font-bold text-slate-800">Cek Status NIK / KK</h4>
-              <p className="text-sm font-bold text-slate-900">Akses Mandiri</p>
-              <p className="text-[11px] text-slate-500 line-clamp-2">
-                Pencarian status keterdaftaran bansos terbuka dengan masking privasi.
-              </p>
-            </div>
-            <Link
-              href="/cek-status"
-              className="mt-3 text-xs font-semibold text-teal-700 hover:text-teal-800 flex items-center gap-1"
-            >
-              <span>Cek Sekarang</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          {/* Card 4: Profil Kependudukan */}
-          <div className="w-52 sm:w-56 flex-shrink-0 snap-start rounded-3xl bg-white border border-slate-200/90 p-4.5 flex flex-col justify-between shadow-xs hover:border-teal-300 transition">
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-bold bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full inline-block">
-                Kependudukan
-              </span>
-              <h4 className="text-xs font-bold text-slate-800">Profil & Data BPS</h4>
-              <p className="text-sm font-bold text-slate-900">14 Kriteria BPS</p>
-              <p className="text-[11px] text-slate-500 line-clamp-2">
-                Kelayakan desil, foto tempat tinggal, dan susunan keluarga.
-              </p>
-            </div>
-            <Link
-              href="/profil"
-              className="mt-3 text-xs font-semibold text-teal-700 hover:text-teal-800 flex items-center gap-1"
-            >
-              <span>Buka Profil</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* 5. SIMULASI ALUR PROSES (COBA KONDISI TAHAP 1 - 5) */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 p-4 shadow-xs space-y-2.5">
-        <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-          <Sliders className="w-4 h-4 text-teal-600 flex-shrink-0" />
-          <span>Simulasi Alur Proses (Coba Kondisi Pengajuan):</span>
-        </div>
-
-        <div className="flex flex-wrap gap-1.5">
-          {simulationOptions.map((opt) => (
-            <button
-              key={opt.stage}
-              type="button"
-              onClick={() => handleStageChange(opt.stage)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer flex items-center gap-1 ${
-                currentStage === opt.stage
-                  ? 'bg-teal-600 text-white shadow-xs font-semibold'
-                  : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
-              }`}
-            >
-              <span>{opt.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 6. DETAIL LENGKAP ALUR PENGECEKAN BERJENJANG (STEPPER) */}
-      <AlurPencatatanStepper currentStage={currentStage} />
-
-      {/* 7. MODAL DETAIL SK RESMI */}
-      {showSkModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Detail Surat Keputusan Penetapan Bansos"
-        >
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-scaleUp">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center">
-                  <FileText className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900 leading-tight">
-                    Surat Keputusan (SK) Bansos
+                  <h3 className="text-xs font-bold text-slate-900 group-hover:text-teal-800 leading-snug">
+                    {article.title}
                   </h3>
-                  <p className="text-[11px] text-slate-500">Dokumen Penetapan Resmi</p>
+                </div>
+
+                <div className="pt-2 text-[10px] text-slate-400 font-medium">
+                  {article.readTime}
                 </div>
               </div>
+            );
+
+            if (article.onClick) {
+              return (
+                <button
+                  key={article.id}
+                  type="button"
+                  onClick={article.onClick}
+                  className="text-left cursor-pointer h-full"
+                >
+                  {cardContent}
+                </button>
+              );
+            }
+
+            return (
+              <Link key={article.id} href={article.href} className="block h-full">
+                {cardContent}
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 6. ALUR PENGECEKAN BERJENJANG & SIMULASI STATUS */}
+      <section id="alur-verifikasi" className="space-y-4 pt-2">
+        {/* Banner Simulasi Alur Proses */}
+        <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+            <Sliders className="w-4 h-4 text-teal-600 flex-shrink-0" />
+            <span>Simulasi Alur Proses (Coba Kondisi):</span>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5">
+            {simulationOptions.map((opt) => (
               <button
+                key={opt.stage}
                 type="button"
-                onClick={() => setShowSkModal(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition cursor-pointer"
-                aria-label="Tutup Modal"
+                onClick={() => handleStageChange(opt.stage)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1 ${
+                  currentStage === opt.stage
+                    ? 'bg-teal-600 text-white shadow-xs font-semibold'
+                    : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
+                }`}
               >
-                <X className="w-4 h-4" />
+                <span>{opt.label}</span>
               </button>
-            </div>
-
-            <div className="space-y-3 text-xs">
-              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5">
-                <div className="flex justify-between">
-                  <span className="text-slate-500 text-[11px]">Nomor SK Penetapan:</span>
-                  <span className="font-mono font-bold text-slate-800 text-[11px]">
-                    SK-BANSOS/2026/09/0042
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500 text-[11px]">Tanggal Penetapan:</span>
-                  <span className="font-medium text-slate-800 text-[11px]">10 September 2026</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500 text-[11px]">Pejabat Berwenang:</span>
-                  <span className="font-semibold text-emerald-700 text-[11px]">
-                    Petugas Pusat / Admin Kemensos
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between border-b border-slate-100 pb-1.5">
-                  <span className="text-slate-500">Nama Penerima:</span>
-                  <span className="font-bold text-slate-800">{profile.nama_lengkap || 'Budi Santoso'}</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-100 pb-1.5">
-                  <span className="text-slate-500">Jenis Bantuan:</span>
-                  <span className="font-semibold text-slate-800">PKH & Sembako (BPNT)</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-100 pb-1.5">
-                  <span className="text-slate-500">Nominal Alokasi:</span>
-                  <span className="font-bold text-teal-700">Rp 600.000 / bulan</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-100 pb-1.5">
-                  <span className="text-slate-500">Bank / Lembaga Penyalur:</span>
-                  <span className="font-medium text-slate-800">Bank Himbara / PT Pos Indonesia</span>
-                </div>
-              </div>
-
-              <div className="p-3 bg-teal-50/70 border border-teal-200/80 rounded-2xl flex items-start gap-2 text-teal-800 text-[11px]">
-                <Info className="w-4 h-4 flex-shrink-0 mt-0.5 text-teal-600" />
-                <p>
-                  Sesuai aturan resmi, penetapan akhir penerima bantuan sosial sepenuhnya ditetapkan oleh Petugas Pusat/Admin setelah proses pengecekan data lapangan selesai.
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setShowSkModal(false)}
-              className="w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition shadow-xs cursor-pointer"
-            >
-              Tutup Rincian SK
-            </button>
+            ))}
           </div>
         </div>
-      )}
+
+        {/* Hero Card Status Pengajuan Terkini */}
+        <div className={isSimulating ? 'opacity-50 transition-opacity duration-200' : 'transition-opacity duration-200'}>
+          <StatusBannerHero
+            currentStage={currentStage}
+            nomorPengajuan="PB-202609-0001"
+            updatedAt="10 September 2026"
+          />
+        </div>
+
+        {/* Stepper Detail 5 Tingkat Verifikasi Berjenjang */}
+        <AlurPencatatanStepper currentStage={currentStage} />
+      </section>
     </div>
   );
 }
-
