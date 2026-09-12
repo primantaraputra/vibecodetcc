@@ -3,6 +3,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { isSupabaseConfigured } from '@/lib/supabase/config';
 import { UserProfile } from '@/lib/types';
 import { isPetugas } from '@/lib/auth/roles';
 import { DEMO_USERS } from '@/lib/auth/demo-users';
@@ -22,11 +23,8 @@ export async function loginUser(emailInput: string, passwordInput: string): Prom
   const password = passwordInput;
   const cookieStore = cookies();
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const isDummyUrl = !supabaseUrl || supabaseUrl.includes('dummy-bansos.supabase.co');
-
   // 1. Jika URL Supabase nyata terkonfigurasi, coba Supabase Auth
-  if (!isDummyUrl) {
+  if (isSupabaseConfigured()) {
     try {
       const supabase = createClient();
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -49,7 +47,7 @@ export async function loginUser(emailInput: string, passwordInput: string): Prom
           is_active: true,
         };
 
-        const redirectUrl = isPetugas(userProfile.role) ? '/dashboard' : '/profil';
+        const redirectUrl = isPetugas(userProfile.role) ? '/dashboard' : '/status-bansos';
         return { success: true, redirectUrl, user: userProfile };
       }
     } catch {
@@ -70,7 +68,7 @@ export async function loginUser(emailInput: string, passwordInput: string): Prom
       maxAge: 60 * 60 * 24 * 7, // 7 hari
     });
 
-    const redirectUrl = isPetugas(matchedUser.role) ? '/dashboard' : '/profil';
+    const redirectUrl = isPetugas(matchedUser.role) ? '/dashboard' : '/status-bansos';
     return {
       success: true,
       redirectUrl,
@@ -94,12 +92,17 @@ export async function logoutUser() {
   // Hapus demo cookie
   cookieStore.delete('demo_session');
 
-  // Hapus Supabase session jika ada
-  try {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-  } catch {
-    // Ignore error
+  // Hapus Supabase session hanya jika Supabase nyata aktif terkonfigurasi
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = createClient();
+      await Promise.race([
+        supabase.auth.signOut(),
+        new Promise((resolve) => setTimeout(resolve, 800)),
+      ]);
+    } catch {
+      // Ignore error
+    }
   }
 
   redirect('/login');

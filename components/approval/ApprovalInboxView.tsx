@@ -43,6 +43,7 @@ export function ApprovalInboxView({ initialData, userRole, userNama }: Props) {
   const [actionType, setActionType] = useState<'setujui' | 'tolak' | 'minta_revisi'>('setujui');
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [loadingDetailId, setLoadingDetailId] = useState<string | null>(null);
 
   // Sync with localStorage
   const loadLocalData = () => {
@@ -124,17 +125,22 @@ export function ApprovalInboxView({ initialData, userRole, userNama }: Props) {
 
   // Open Detail
   const handleOpenDetail = async (item: ApprovalItem) => {
-    const localDetail = localStorageManager.getPengajuanDetail(item.id);
-    if (localDetail) {
-      setSelectedDetail(localDetail);
-      setIsDetailOpen(true);
-      return;
-    }
+    setLoadingDetailId(item.id);
+    try {
+      const localDetail = localStorageManager.getPengajuanDetail(item.id);
+      if (localDetail) {
+        setSelectedDetail(localDetail);
+        setIsDetailOpen(true);
+        return;
+      }
 
-    const detail = await getApprovalDetail(item.id);
-    if (detail) {
-      setSelectedDetail(detail);
-      setIsDetailOpen(true);
+      const detail = await getApprovalDetail(item.id);
+      if (detail) {
+        setSelectedDetail(detail);
+        setIsDetailOpen(true);
+      }
+    } finally {
+      setLoadingDetailId(null);
     }
   };
 
@@ -430,6 +436,7 @@ export function ApprovalInboxView({ initialData, userRole, userNama }: Props) {
               key={item.id}
               item={item}
               currentRole={activeRole}
+              isLoadingDetail={loadingDetailId === item.id}
               onOpenDetail={handleOpenDetail}
               onActionClick={handleActionClick}
             />

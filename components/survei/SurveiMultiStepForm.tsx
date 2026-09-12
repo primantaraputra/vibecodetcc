@@ -832,9 +832,13 @@ export function SurveiMultiStepForm() {
               type="button"
               disabled={isSubmitting}
               onClick={handleSubmitFinal}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-extrabold text-white bg-brand-600 hover:bg-brand-700 shadow-md transition disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-extrabold text-white bg-brand-600 hover:bg-brand-700 disabled:bg-brand-700/80 shadow-md transition disabled:cursor-not-allowed"
             >
-              <Send className="w-4 h-4" />
+              {isSubmitting ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
               <span>{isSubmitting ? 'Menyimpan Survei...' : 'Kirim Survei & Usulkan ke RW'}</span>
             </button>
           )}

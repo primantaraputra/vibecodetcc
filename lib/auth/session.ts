@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
+import { isSupabaseConfigured } from '@/lib/supabase/config';
 import { UserProfile, UserSession } from '@/lib/types';
 
 /**
@@ -12,7 +13,11 @@ export async function getCurrentUserSession(): Promise<UserSession> {
   const demoCookie = cookieStore.get('demo_session')?.value;
   if (demoCookie) {
     try {
-      const profile = JSON.parse(demoCookie) as UserProfile;
+      let rawCookie = demoCookie;
+      try {
+        rawCookie = decodeURIComponent(demoCookie);
+      } catch {}
+      const profile = JSON.parse(rawCookie) as UserProfile;
       if (profile && profile.id && profile.role) {
         return {
           user: {
@@ -29,6 +34,14 @@ export async function getCurrentUserSession(): Promise<UserSession> {
   }
 
   // 2. Supabase Auth Session
+  if (!isSupabaseConfigured()) {
+    return {
+      user: null,
+      profile: null,
+      role: 'anon',
+    };
+  }
+
   try {
     const supabase = createClient();
     const {

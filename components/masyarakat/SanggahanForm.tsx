@@ -18,6 +18,7 @@ import {
 import { generateSanggahanLetter } from '@/lib/ai/assistant';
 import { submitSanggahanAction } from '@/lib/actions/public';
 import { localStorageManager } from '@/lib/storage/localStorageManager';
+import { Skeleton } from '@/components/ui';
 
 export default function SanggahanForm() {
   const [nik, setNik] = useState('');
@@ -130,17 +131,17 @@ export default function SanggahanForm() {
           <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
             Sanggahan Berhasil Terkirim
           </span>
-          <h2 className="text-xl font-bold text-slate-900 mt-2">
+          <h2 className="text-base font-bold text-slate-900 mt-2">
             Pengajuan Keberatan Anda Telah Masuk Sistem
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto mt-1">
+          <p className="text-xs text-slate-500 max-w-md mx-auto mt-1">
             Petugas Kesejahteraan Sosial Kelurahan & Kecamatan akan meneliti berkas serta menjadwalkan verifikasi lapang.
           </p>
         </div>
 
         <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 max-w-sm mx-auto space-y-1">
           <span className="text-xs text-slate-500">Nomor Registrasi Tiket Sanggahan:</span>
-          <div className="text-lg font-mono font-bold text-civic-700 tracking-wider">
+          <div className="text-sm font-mono font-bold text-civic-700 tracking-wider">
             {submittedTicket}
           </div>
         </div>
@@ -176,7 +177,7 @@ export default function SanggahanForm() {
           <FileText className="w-5 h-5" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Formulir Sanggahan & Keberatan Warga</h1>
+          <h1 className="text-sm sm:text-base font-bold text-slate-900">Formulir Sanggahan & Keberatan Warga</h1>
           <p className="text-xs text-slate-500">
             Saluran resmi pengajuan peninjauan ulang kelayakan bansos dengan bantuan penyusunan AI
           </p>
@@ -294,14 +295,34 @@ export default function SanggahanForm() {
             type="button"
             onClick={handleGenerateAIDraft}
             disabled={isGeneratingAI || !kondisiRingkas.trim()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-medium transition disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 disabled:bg-indigo-50/50 text-indigo-700 border border-indigo-200 text-xs font-medium transition disabled:cursor-not-allowed"
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            {isGeneratingAI ? (
+              <div className="w-3.5 h-3.5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5" />
+            )}
             <span>{isGeneratingAI ? 'AI Sedang Menyusun Surat...' : '✨ Bantu Susun Surat Formal dengan AI'}</span>
           </button>
 
+          {/* AI Drafting Skeleton */}
+          {isGeneratingAI && (
+            <div className="p-4 rounded-xl bg-slate-50 border border-indigo-200 space-y-3 animate-fadeIn">
+              <div className="flex items-center gap-2">
+                <div className="w-3.5 h-3.5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                <Skeleton className="h-4 w-52" />
+              </div>
+              <div className="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-5/6" />
+                <Skeleton className="h-3 w-4/5" />
+                <Skeleton className="h-3 w-3/4" />
+              </div>
+            </div>
+          )}
+
           {/* AI Draft Result Preview */}
-          {aiDraft && (
+          {!isGeneratingAI && aiDraft && (
             <div className="p-4 rounded-xl bg-slate-50 border border-indigo-200 space-y-3 animate-fadeIn">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-indigo-900 flex items-center gap-1.5">

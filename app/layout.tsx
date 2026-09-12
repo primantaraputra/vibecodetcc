@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import { ChatbotBansosModal } from '@/components/masyarakat';
-import PwaInstallPrompt from '@/components/pwa/PwaInstallPrompt';
-import LocalStorageManagerModal from '@/components/storage/LocalStorageManagerModal';
+import { TopProgressBar } from '@/components/ui/TopProgressBar';
 
 export const metadata: Metadata = {
   title: 'SI-BANSOS | Sistem Cek Kelayakan & Pendataan Terpadu Bansos',
@@ -32,10 +32,11 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
+        <Suspense fallback={null}>
+          <TopProgressBar />
+        </Suspense>
         {children}
         <ChatbotBansosModal />
-        <PwaInstallPrompt />
-        <LocalStorageManagerModal />
       </body>
     </html>
   );

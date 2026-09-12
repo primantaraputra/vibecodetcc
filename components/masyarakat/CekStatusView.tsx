@@ -21,6 +21,7 @@ import {
 import { searchWargaStatusByNik, WargaStatusResult } from '@/lib/actions/public';
 import { localStorageManager } from '@/lib/storage/localStorageManager';
 import { maskNIK, maskName } from '@/lib/utils';
+import { Skeleton } from '@/components/ui';
 
 export default function CekStatusView() {
   const [nikInput, setNikInput] = useState('');
@@ -140,7 +141,7 @@ export default function CekStatusView() {
             <Search className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">
+            <h1 className="text-sm sm:text-base font-bold text-slate-900">
               Cek Status Kelayakan Bansos (NIK / No. KK)
             </h1>
             <p className="text-xs text-slate-500">
@@ -228,8 +229,36 @@ export default function CekStatusView() {
         </div>
       </div>
 
+      {/* Loading Skeleton State */}
+      {isLoading && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-6 w-56" />
+                <Skeleton className="h-3 w-48" />
+              </div>
+              <Skeleton className="w-16 h-16 rounded-xl" />
+            </div>
+            <div className="pt-4 border-t border-slate-100 space-y-4">
+              <Skeleton className="h-4 w-52" />
+              <div className="grid grid-cols-4 gap-2 py-2">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex flex-col items-center space-y-2">
+                    <Skeleton className="w-10 h-10 rounded-full" />
+                    <Skeleton className="h-3 w-16" />
+                    <Skeleton className="h-2 w-12" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Result Section */}
-      {hasSearched && result && (
+      {!isLoading && hasSearched && result && (
         <div className="space-y-6 animate-fadeIn">
           {/* Main Card */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -244,7 +273,7 @@ export default function CekStatusView() {
                     <ShieldCheck className="w-3.5 h-3.5" /> Terdaftar di DTKS
                   </span>
                 </div>
-                <h2 className="text-lg font-bold text-white tracking-wide">{result.namaMasked}</h2>
+                <h2 className="text-sm sm:text-base font-bold text-white tracking-wide">{result.namaMasked}</h2>
                 <p className="text-xs text-slate-300">{result.wilayahNama}</p>
               </div>
 
@@ -256,8 +285,8 @@ export default function CekStatusView() {
                   </span>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex flex-col items-center justify-center font-mono font-bold text-white">
-                  <span className="text-xs leading-none text-slate-300">DESIL</span>
-                  <span className="text-lg leading-none text-amber-400">{result.desil}</span>
+                  <span className="text-[10px] leading-none text-slate-300">DESIL</span>
+                  <span className="text-sm leading-none text-amber-400 font-bold">{result.desil}</span>
                 </div>
               </div>
             </div>

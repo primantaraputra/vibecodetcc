@@ -17,11 +17,12 @@ import {
 interface Props {
   item: ApprovalItem;
   currentRole: UserRole;
+  isLoadingDetail?: boolean;
   onOpenDetail: (item: ApprovalItem) => void;
   onActionClick: (item: ApprovalItem, action: 'setujui' | 'tolak' | 'minta_revisi') => void;
 }
 
-export function ApprovalCard({ item, currentRole, onOpenDetail, onActionClick }: Props) {
+export function ApprovalCard({ item, currentRole, isLoadingDetail, onOpenDetail, onActionClick }: Props) {
   // Cek apakah item ini butuh tindakan aktif dari role saat ini
   const isActionable = () => {
     if (currentRole === 'petugas_rw' && item.status === 'diusulkan_rt') return true;
@@ -119,10 +120,15 @@ export function ApprovalCard({ item, currentRole, onOpenDetail, onActionClick }:
       <div className="p-3 bg-slate-50/80 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
         <button
           onClick={() => onOpenDetail(item)}
-          className="text-xs font-semibold text-slate-700 hover:text-slate-900 flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-slate-200 transition"
+          disabled={isLoadingDetail}
+          className="text-xs font-semibold text-slate-700 hover:text-slate-900 flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-slate-200 transition disabled:opacity-60"
         >
+          {isLoadingDetail ? (
+            <div className="w-3.5 h-3.5 border-2 border-slate-700 border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <ChevronRight className="w-3.5 h-3.5" />
+          )}
           <span>Detail Lengkap & Riwayat</span>
-          <ChevronRight className="w-3.5 h-3.5" />
         </button>
 
         {actionable && (

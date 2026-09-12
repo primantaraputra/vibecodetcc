@@ -21,6 +21,7 @@ import {
   Info,
 } from 'lucide-react';
 import { DashboardMetrics, getAIExtendedExecutiveReport } from '@/lib/actions/analytics';
+import { Skeleton } from '@/components/ui';
 
 interface Props {
   metrics: DashboardMetrics;
@@ -266,14 +267,37 @@ export default function KecamatanAnalyticsView({ metrics }: Props) {
             type="button"
             onClick={handleGenerateAI}
             disabled={isGeneratingAI}
-            className="print:hidden px-4 py-2.5 bg-amber-400 hover:bg-amber-300 disabled:bg-indigo-400/50 text-slate-950 rounded-xl text-xs font-bold shadow-md transition flex items-center justify-center gap-2"
+            className="print:hidden px-4 py-2.5 bg-amber-400 hover:bg-amber-300 disabled:bg-amber-400/70 text-slate-950 rounded-xl text-xs font-bold shadow-md transition flex items-center justify-center gap-2 disabled:cursor-not-allowed"
           >
-            <Sparkles className="w-4 h-4 text-slate-950" />
+            {isGeneratingAI ? (
+              <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Sparkles className="w-4 h-4 text-slate-950" />
+            )}
             <span>{isGeneratingAI ? 'AI Sedang Menganalisis Data...' : '✨ Generate AI Brief'}</span>
           </button>
         </div>
 
-        {aiReport && (
+        {/* AI Generating Skeleton */}
+        {isGeneratingAI && (
+          <div className="mt-4 p-5 rounded-xl bg-white/10 border border-white/20 text-xs sm:text-sm space-y-4 backdrop-blur-md animate-fadeIn">
+            <div className="space-y-2 border-b border-white/10 pb-3">
+              <Skeleton className="h-3.5 w-40 bg-white/20" />
+              <Skeleton className="h-5 w-3/4 bg-white/20" />
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-full bg-white/20" />
+              <Skeleton className="h-3 w-5/6 bg-white/20" />
+              <Skeleton className="h-3 w-4/5 bg-white/20" />
+            </div>
+            <div className="pt-2 border-t border-white/10 space-y-2">
+              <Skeleton className="h-3.5 w-32 bg-white/20" />
+              <Skeleton className="h-3 w-2/3 bg-white/20" />
+            </div>
+          </div>
+        )}
+
+        {!isGeneratingAI && aiReport && (
           <div className="mt-4 p-5 rounded-xl bg-white/10 border border-white/20 text-xs sm:text-sm space-y-4 backdrop-blur-md animate-fadeIn">
             <div className="border-b border-white/10 pb-2">
               <span className="text-[10px] uppercase font-bold text-amber-300 tracking-wider block">

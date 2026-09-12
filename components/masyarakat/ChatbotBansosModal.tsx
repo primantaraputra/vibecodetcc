@@ -198,9 +198,16 @@ export default function ChatbotBansosModal() {
             ))}
 
             {isTyping && (
-              <div className="flex items-center gap-2 text-slate-400 text-xs pl-2">
-                <Bot className="w-4 h-4 animate-bounce" />
-                <span>AI sedang menganalisis jawaban...</span>
+              <div className="flex items-start gap-2.5 animate-fadeIn">
+                <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
+                  <Bot className="w-4 h-4" />
+                </div>
+                <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-indigo-600 typing-dot-1" />
+                  <div className="w-2 h-2 rounded-full bg-indigo-600 typing-dot-2" />
+                  <div className="w-2 h-2 rounded-full bg-indigo-600 typing-dot-3" />
+                  <span className="text-[11px] text-slate-500 font-medium ml-1.5">AI sedang menyusun jawaban...</span>
+                </div>
               </div>
             )}
             <div ref={chatEndRef} />

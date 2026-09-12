@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   AlertTriangle,
 } from 'lucide-react';
+import { Skeleton } from '@/components/ui';
 
 interface SimulationState {
   statusRumah: string;
@@ -46,6 +47,15 @@ export default function SimulasiMandiriView() {
   });
 
   const [hasCalculated, setHasCalculated] = useState(false);
+  const [isCalculating, setIsCalculating] = useState(false);
+
+  const handleCalculate = () => {
+    setIsCalculating(true);
+    setTimeout(() => {
+      setHasCalculated(true);
+      setIsCalculating(false);
+    }, 450);
+  };
 
   // Kalkulasi PMT Skor Sederhana (0 - 100) & Desil 1-10
   const calculateResult = () => {
@@ -295,16 +305,45 @@ export default function SimulasiMandiriView() {
 
         <button
           type="button"
-          onClick={() => setHasCalculated(true)}
-          className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-xl shadow-sm transition text-sm flex items-center justify-center gap-2"
+          onClick={handleCalculate}
+          disabled={isCalculating}
+          className="w-full bg-brand-600 hover:bg-brand-700 disabled:bg-brand-700/80 text-white font-medium py-3 px-4 rounded-xl shadow-sm transition text-sm flex items-center justify-center gap-2 disabled:cursor-not-allowed"
         >
-          <Sparkles className="w-4 h-4" />
-          <span>Hitung Estimasi Desil Saya</span>
+          {isCalculating ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <span>Menghitung Estimasi Desil...</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-4 h-4" />
+              <span>Hitung Estimasi Desil Saya</span>
+            </>
+          )}
         </button>
       </div>
 
+      {/* Calculating Skeleton */}
+      {isCalculating && (
+        <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-6 sm:p-8 space-y-6 animate-fadeIn">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-6 w-56" />
+              <Skeleton className="h-3 w-48" />
+            </div>
+            <Skeleton className="w-16 h-16 rounded-2xl" />
+          </div>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-4/5" />
+          </div>
+        </div>
+      )}
+
       {/* Simulation Result Box */}
-      {hasCalculated && (
+      {!isCalculating && hasCalculated && (
         <div className="bg-white rounded-2xl border-2 border-brand-500 shadow-md p-6 sm:p-8 space-y-6 animate-fadeIn">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
             <div>

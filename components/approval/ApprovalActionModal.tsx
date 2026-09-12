@@ -222,9 +222,13 @@ export function ApprovalActionModal({
             <button
               type="submit"
               disabled={loading || alasan.trim().length < 5}
-              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white rounded-lg shadow-sm transition disabled:opacity-50 ${details.btnBg}`}
+              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white rounded-lg shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed ${details.btnBg}`}
             >
-              <Send className="w-3.5 h-3.5" />
+              {loading ? (
+                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Send className="w-3.5 h-3.5" />
+              )}
               <span>{loading ? 'Memproses...' : details.btnText}</span>
             </button>
           </div>

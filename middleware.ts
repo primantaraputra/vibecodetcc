@@ -13,25 +13,32 @@ export async function middleware(request: NextRequest) {
     path.startsWith('/approval') ||
     path.startsWith('/analitik') ||
     path.startsWith('/audit-log');
-  const isMasyarakatRoute = path.startsWith('/profil') || path.startsWith('/sanggahan');
+  const isMasyarakatRoute =
+    path.startsWith('/profil') ||
+    path.startsWith('/sanggahan') ||
+    path.startsWith('/status-bansos');
 
   // 1. Cek Demo Session Cookie
   const demoCookie = request.cookies.get('demo_session')?.value;
   if (demoCookie) {
     try {
-      const demoProfile = JSON.parse(demoCookie) as { role?: UserRole };
+      let rawCookie = demoCookie;
+      try {
+        rawCookie = decodeURIComponent(demoCookie);
+      } catch {}
+      const demoProfile = JSON.parse(rawCookie) as { role?: UserRole };
       const role = demoProfile?.role;
 
-      if (isAuthRoute) {
+      if (isAuthRoute || path === '/') {
         if (isPetugas(role)) {
           return NextResponse.redirect(new URL('/dashboard', request.url));
         } else {
-          return NextResponse.redirect(new URL('/profil', request.url));
+          return NextResponse.redirect(new URL('/status-bansos', request.url));
         }
       }
 
       if (isPetugasRoute && !isPetugas(role)) {
-        return NextResponse.redirect(new URL('/profil', request.url));
+        return NextResponse.redirect(new URL('/status-bansos', request.url));
       }
 
       return NextResponse.next();
@@ -57,6 +64,9 @@ export async function middleware(request: NextRequest) {
       redirectUrl.searchParams.set('redirect', path);
       return NextResponse.redirect(redirectUrl);
     }
+    if (path === '/') {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
     return response;
   }
 
@@ -68,7 +78,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // If user is authenticated via Supabase, check role
-  if (user && supabase && (isPetugasRoute || isMasyarakatRoute || isAuthRoute)) {
+  if (user && supabase && (isPetugasRoute || isMasyarakatRoute || isAuthRoute || path === '/')) {
     try {
       const { data: profile } = await supabase
         .from('users')
@@ -78,20 +88,24 @@ export async function middleware(request: NextRequest) {
 
       const role = (profile as { role?: UserRole } | null)?.role;
 
-      if (isAuthRoute) {
+      if (isAuthRoute || path === '/') {
         if (isPetugas(role)) {
           return NextResponse.redirect(new URL('/dashboard', request.url));
         } else {
-          return NextResponse.redirect(new URL('/profil', request.url));
+          return NextResponse.redirect(new URL('/status-bansos', request.url));
         }
       }
 
       if (isPetugasRoute && !isPetugas(role)) {
-        return NextResponse.redirect(new URL('/profil', request.url));
+        return NextResponse.redirect(new URL('/status-bansos', request.url));
       }
     } catch {
       // Continue
     }
+  }
+
+  if (path === '/') {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   return response;

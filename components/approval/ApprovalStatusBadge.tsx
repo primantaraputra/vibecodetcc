@@ -60,20 +60,20 @@ export function ApprovalStatusBadge({ status, size = 'md' }: Props) {
         };
       case 'disetujui_kecamatan':
         return {
-          label: 'Disetujui Final (Kecamatan)',
-          bg: 'bg-emerald-50 text-emerald-700 border-emerald-300 font-semibold',
+          label: 'Lolos Pengecekan Kecamatan (Menunggu Penetapan Pusat)',
+          bg: 'bg-teal-50 text-teal-700 border-teal-300 font-semibold',
           icon: CheckCircle2,
         };
       case 'ditolak_kecamatan':
         return {
-          label: 'Ditolak Final (Kecamatan)',
+          label: 'Tidak Lolos Pengecekan Kecamatan',
           bg: 'bg-rose-50 text-rose-700 border-rose-300 font-semibold',
           icon: XCircle,
         };
       case 'tersalurkan':
         return {
-          label: 'Bansos Tersalurkan',
-          bg: 'bg-purple-50 text-purple-700 border-purple-200',
+          label: 'Ditetapkan Pusat & Siap Disalurkan',
+          bg: 'bg-emerald-50 text-emerald-800 border-emerald-300 font-semibold',
           icon: Sparkles,
         };
       case 'dibatalkan':

@@ -1,6 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { Database } from '@/lib/types/database.types';
+import { isSupabaseConfigured } from './config';
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
@@ -9,9 +10,16 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
+  if (!isSupabaseConfigured()) {
+    return { response, user: null, supabase: null };
+  }
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
   const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    anonKey,
     {
       cookies: {
         get(name: string) {
@@ -55,9 +63,16 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  try {
+    const userResult = await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<{ data: { user: null }; error: Error }>((resolve) =>
+        setTimeout(() => resolve({ data: { user: null }, error: new Error('Timeout') }), 1500)
+      ),
+    ]);
 
-  return { response, user, supabase };
+    return { response, user: userResult.data.user, supabase };
+  } catch {
+    return { response, user: null, supabase };
+  }
 }

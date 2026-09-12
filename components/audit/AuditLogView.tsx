@@ -20,6 +20,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { AuditLogItem, verifyHashChainIntegrity, fetchAuditLogs } from '@/lib/actions/audit';
+import { Skeleton } from '@/components/ui';
 
 interface Props {
   initialLogs: AuditLogItem[];
@@ -239,7 +240,18 @@ export default function AuditLogView({ initialLogs }: Props) {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredLogs.length === 0 ? (
+              {isRefreshing ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i}>
+                    <td className="py-3.5 px-4"><Skeleton className="h-3.5 w-24" /><Skeleton className="h-2.5 w-16 mt-1" /></td>
+                    <td className="py-3.5 px-4"><Skeleton className="h-3.5 w-28" /><Skeleton className="h-3 w-16 mt-1 rounded-full" /></td>
+                    <td className="py-3.5 px-4"><Skeleton className="h-3.5 w-24" /></td>
+                    <td className="py-3.5 px-4"><Skeleton className="h-3.5 w-36" /><Skeleton className="h-2.5 w-48 mt-1" /></td>
+                    <td className="py-3.5 px-4"><Skeleton className="h-3.5 w-32 font-mono" /></td>
+                    <td className="py-3.5 px-4 text-center"><Skeleton className="h-7 w-16 mx-auto rounded-lg" /></td>
+                  </tr>
+                ))
+              ) : filteredLogs.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-8 text-center text-slate-400">
                     Tidak ada log audit yang sesuai dengan filter pencarian.

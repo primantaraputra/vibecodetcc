@@ -23,6 +23,7 @@ import {
   getPublicForumPengaduan,
 } from '@/lib/actions/public';
 import { localStorageManager } from '@/lib/storage/localStorageManager';
+import { Skeleton } from '@/components/ui';
 
 export default function PengaduanWhistleblowingForm() {
   const [activeTab, setActiveTab] = useState<'lapor' | 'forum' | 'lacak'>('forum');
@@ -461,9 +462,19 @@ export default function PengaduanWhistleblowingForm() {
               <button
                 type="submit"
                 disabled={isTracking || !ticketQuery.trim()}
-                className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-medium rounded-xl shadow-sm transition flex items-center gap-1.5"
+                className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 disabled:bg-amber-700/80 text-white text-xs font-medium rounded-xl shadow-sm transition flex items-center gap-1.5 disabled:cursor-not-allowed"
               >
-                {isTracking ? 'Mencari...' : <><Search className="w-4 h-4" /><span>Lacak</span></>}
+                {isTracking ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Melacak...</span>
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-4 h-4" />
+                    <span>Lacak</span>
+                  </>
+                )}
               </button>
             </div>
           </form>
@@ -480,14 +491,32 @@ export default function PengaduanWhistleblowingForm() {
             </button>
           </div>
 
-          {trackingError && (
+          {/* Tracking Skeleton */}
+          {isTracking && (
+            <div className="p-5 rounded-2xl border border-slate-200 bg-white space-y-4 animate-fadeIn">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="space-y-1.5">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-5 w-48" />
+                  <Skeleton className="h-3 w-40" />
+                </div>
+                <Skeleton className="h-6 w-24 rounded-full" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-3.5 w-28" />
+                <Skeleton className="h-16 w-full rounded-xl" />
+              </div>
+            </div>
+          )}
+
+          {!isTracking && trackingError && (
             <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-rose-600 flex-shrink-0" />
               <span>{trackingError}</span>
             </div>
           )}
 
-          {trackingResult && (
+          {!isTracking && trackingResult && (
             <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50 space-y-4 animate-fadeIn">
               <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                 <div>
